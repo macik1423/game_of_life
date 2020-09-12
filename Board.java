@@ -2,7 +2,6 @@ package life;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
 
 public class Board extends JPanel {
     private final int width;
@@ -23,7 +22,7 @@ public class Board extends JPanel {
         super.paintComponent(g);
         int tileSize = width / size;
         if (universe.getGenerationCounter() > 1) {
-            game = universe.generateNextStep(game);
+            game = universe.getGame();
         }
         fillBoard(g, size, tileSize);
     }
