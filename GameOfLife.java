@@ -96,16 +96,14 @@ public class GameOfLife extends JFrame {
                         universe.setGenerationCounter(1);
                         generationLabel.setText("Generation #" + universe.getGenerationCounter());
                     } else {
-                        synchronized (thread) {
-                            thread.notify();
+                        Thread t = new Thread(universe);
+                        t.start();
+                        synchronized (t) {
+                            t.wait();
                         }
-                        universe.increaseGenerationCounter();
                         generationLabel.setText("Generation #" + universe.getGenerationCounter());
-
-                        board.repaint();
-                        Thread.sleep(10);
                         aliveLabel.setText("Alive: " + universe.getAlive());
-
+                        board.repaint();
                         Thread.sleep(sleepMs);
                     }
 
