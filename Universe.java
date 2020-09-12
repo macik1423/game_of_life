@@ -4,10 +4,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
-public class Universe {
+public class Universe implements Runnable {
     private final int size;
     private int alive;
     private int generationCounter = 1;
+    private String[][] game;
 
     public Universe(int size) {
         this.size = size;
@@ -16,7 +17,7 @@ public class Universe {
     public String[][] create() {
         alive = 0;
         Random rand = new Random();
-        String[][] game = new String[size][size];
+        game = new String[size][size];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (rand.nextBoolean()) {
@@ -27,35 +28,6 @@ public class Universe {
                 }
             }
         }
-        return game;
-    }
-
-    @NotNull
-    public String[][] generateNextStep(String[][] game) {
-        alive = 0;
-        String[][] gameCopy = deepCloneGame(game);
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                int counterNeighbors = 0;
-                counterNeighbors += case1(game, i, j);
-                counterNeighbors += case2(game, i, j);
-                counterNeighbors += case3(game, i, j);
-                counterNeighbors += case4(game, i, j);
-                counterNeighbors += case5(game, i, j);
-                counterNeighbors += case6(game, i, j);
-                counterNeighbors += case7(game, i, j);
-                counterNeighbors += case8(game, i, j);
-                if (game[i][j].equals(" ") && counterNeighbors == 3) {
-                    gameCopy[i][j] = "O";
-                } else if (game[i][j].equals("O") && (counterNeighbors > 3 || counterNeighbors < 2)) {
-                    gameCopy[i][j] = " ";
-                }
-                if (gameCopy[i][j].equals("O")) {
-                    alive++;
-                }
-            }
-        }
-        game = deepCloneGame(gameCopy);
         return game;
     }
 
@@ -162,5 +134,38 @@ public class Universe {
 
     public int getAlive() {
         return alive;
+    }
+
+    public String[][] getGame() {
+        return game;
+    }
+
+    @Override
+    public void run() {
+        alive = 0;
+        generationCounter++;
+        String[][] gameCopy = deepCloneGame(game);
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                int counterNeighbors = 0;
+                counterNeighbors += case1(game, i, j);
+                counterNeighbors += case2(game, i, j);
+                counterNeighbors += case3(game, i, j);
+                counterNeighbors += case4(game, i, j);
+                counterNeighbors += case5(game, i, j);
+                counterNeighbors += case6(game, i, j);
+                counterNeighbors += case7(game, i, j);
+                counterNeighbors += case8(game, i, j);
+                if (game[i][j].equals(" ") && counterNeighbors == 3) {
+                    gameCopy[i][j] = "O";
+                } else if (game[i][j].equals("O") && (counterNeighbors > 3 || counterNeighbors < 2)) {
+                    gameCopy[i][j] = " ";
+                }
+                if (gameCopy[i][j].equals("O")) {
+                    alive++;
+                }
+            }
+        }
+        game = deepCloneGame(gameCopy);
     }
 }
